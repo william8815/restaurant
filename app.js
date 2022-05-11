@@ -25,10 +25,13 @@ app.get('/restaurants/:list_id', (req, res) => {
 })
 //search
 app.get('/search', (req, res) => {
-  const keyword = req.query.keyword
-  const name = restaurantList.results.filter(list => (list.name + list.name_en).toLocaleLowerCase().includes(keyword.toLowerCase()))
-  const category = restaurantList.results.filter(list => list.category.toLocaleLowerCase().includes(keyword.toLowerCase()))
-  const data = name.length ? name : category
+  // setting keyword
+  const keyword = req.query.keyword.trim().toLowerCase()
+
+  // filter restaurants
+  const restaurants = restaurantList.results.filter(list => (list.name + list.name_en + list.category).toLocaleLowerCase().includes(keyword))
+  // 如果是空字串就採用原始資料
+  const data = restaurants.length ? restaurants : restaurantList.results
   res.render('index', {
     list: data,
     keyword: req.query.keyword
